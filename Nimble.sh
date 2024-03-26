@@ -22,9 +22,12 @@ pip install numpy==1.24.4
 
 # 安装GO
 rm -rf /usr/local/go
-curl -L https://go.dev/dl/go1.21.6.linux-amd64.tar.gz | tar -xzf - -C /usr/local
-echo 'export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin' >> $HOME/.bash_profile
+cd /usr/local
+sudo wget https://go.dev/dl/go1.22.1.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.22.1.linux-amd64.tar.gz
+export PATH=$PATH:/usr/local/go/bin
 source .bash_profile
+go version
 
 # 克隆官方仓库
 mkdir $HOME/nimble && cd $HOME/nimble
