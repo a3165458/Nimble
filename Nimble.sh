@@ -23,8 +23,8 @@ pip install numpy==1.24.4
 # 安装GO
 rm -rf /usr/local/go
 cd /usr/local
-sudo wget https://go.dev/dl/go1.22.1.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzf go1.22.1.linux-amd64.tar.gz
+wget https://go.dev/dl/go1.22.1.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.22.1.linux-amd64.tar.gz
 export PATH=$PATH:/usr/local/go/bin
 source .bash_profile
 go version
