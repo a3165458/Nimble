@@ -43,8 +43,8 @@ rm -rf /usr/local/go
 cd /usr/local
 wget https://go.dev/dl/go1.22.1.linux-amd64.tar.gz
 tar -C /usr/local -xzf go1.22.1.linux-amd64.tar.gz
-export PATH=$PATH:/usr/local/go/bin
-source .bash_profile
+echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.bashrc
+source ~/.bashrc
 go version
 
 # 克隆官方仓库
