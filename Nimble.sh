@@ -8,6 +8,18 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
+# 导入Socks5代理
+# Import Socks5 proxy
+read -p "请输入Socks5代理地址 (格式为 host:port)，如不需要代理请留空: /Please enter the Socks5 proxy address (format host:port), leave blank if no proxy is needed: " proxy
+
+if [ ! -z "$proxy" ]; then
+    export http_proxy=socks5://$proxy
+    export https_proxy=socks5://$proxy
+    echo "已设置Socks5代理为: $proxy /Socks5 proxy is set to: $proxy"
+else
+    echo "未设置代理 /No proxy set"
+fi
+
 # 节点安装功能
 # Node installation function
 function install_node() {
