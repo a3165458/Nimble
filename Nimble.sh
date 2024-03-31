@@ -32,33 +32,37 @@ apt update
 # Check if Git and others are already installed
 apt install git python3-venv bison screen binutils gcc make bsdmainutils python3-pip -y
 
-# 安装numpy
-# Install numpy
-pip install numpy==1.24.4
-
 
 # 安装GO
 # Install GO
 rm -rf /usr/local/go
-cd /usr/local
+cd $HOME
 wget https://go.dev/dl/go1.22.1.linux-amd64.tar.gz
 tar -C /usr/local -xzf go1.22.1.linux-amd64.tar.gz
-echo "export PATH=\$PATH:/usr/local/go/bin:$HOME/go/bin" >> ~/.bashrc
+echo "export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin" >> ~/.bashrc
 source ~/.bashrc
 go version
 
+
 # 克隆官方仓库
 # Clone the official repository
+cd $HOME
 mkdir $HOME/nimble && cd $HOME/nimble
 git clone https://github.com/nimble-technology/wallet-public.git
+export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
 cd wallet-public
 make install
 
 # 创建钱包
-# Create a wallet
-nimble-networkd keys add ilovenimble
+read -p "请输入你想要创建的钱包数量,首次创建需要生成两个钱包,一个做主钱包,一个作为挖矿钱包,需要提交官方审核/Enter the number of wallets you want to create: " wallet_count
 
-echo "=============================备份好钱包和助记词，下方需要使用==================================="
+    for i in $(seq 1 $wallet_count); do
+        wallet_name="wallet$i"
+        nimble-networkd keys add $wallet_name
+        echo "钱包 $wallet_name 已创建/Wallet $wallet_name has been created."
+    done
+
+echo "=============================备份好钱包和助记词,下方需要使用==================================="
 echo "=============================Make sure to backup your wallet and mnemonic phrase, it will be needed below==================================="
 
 read -p "是否已经备份好助记词? Have you backed up the mnemonic phrase? (y/n) " backup_confirmed
@@ -73,7 +77,7 @@ if [ "$backup_confirmed" != "y" ]; then
 
 # 启动挖矿
 # Start mining
-read -p "请输入钱包地址: Please enter your wallet address: " wallet_addr
+read -p "请输入挖矿钱包地址: Please enter your wallet address: " wallet_addr
 export wallet_addr
 cd  $HOME/nimble
 git clone https://github.com/nimble-technology/nimble-miner-public.git
@@ -84,6 +88,7 @@ cd $HOME/nimble/nimble-miner-public
 source ./nimenv_localminers/bin/activate
 screen -dmS nim bash -c 'make run addr=$wallet_addr'
 
+echo "安装完成，请输入命令screen -r nim 查看运行状态"
 
 }
 
