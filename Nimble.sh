@@ -27,7 +27,7 @@ function install_node() {
     wget https://go.dev/dl/go1.22.1.linux-amd64.tar.gz -P /tmp/
     tar -C /usr/local -xzf /tmp/go1.22.1.linux-amd64.tar.gz
     echo "export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin" >> ~/.bashrc
-    source ~/.bashrc
+    export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
     go version
 
     # 克隆官方仓库并安装
