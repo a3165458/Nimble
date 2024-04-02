@@ -8,11 +8,11 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # 导入Socks5代理
-read -p "请输入Socks5代理地址 (格式为 host:port)，如不需要代理请留空: /Please enter the Socks5 proxy address (format host:port), leave blank if no proxy is needed: " proxy
+read -p "请输入HTTP代理地址 (格式为 host:port)，如不需要代理请留空: /Please enter the HTTP proxy address (format host:port), leave blank if no proxy is needed: " proxy
 if [ ! -z "$proxy" ]; then
-    export http_proxy=socks5://$proxy
-    export https_proxy=socks5://$proxy
-    echo "已设置Socks5代理为: $proxy /Socks5 proxy is set to: $proxy"
+    export http_proxy=http://$proxy
+    export https_proxy=http://$proxy
+    echo "已设置HTTP代理为: $proxy /HTTP proxy is set to: $proxy"
 else
     echo "未设置代理 /No proxy set"
 fi
