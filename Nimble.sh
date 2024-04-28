@@ -72,15 +72,29 @@ function install_node() {
     echo "安装完成，请输入命令 'screen -r nim' 查看运行状态。/Installation complete, enter 'screen -r nim' to view the running status."
 }
 
+# 查看节点日志
+function lonely_start() {
+    read -p "请输入挖矿钱包地址: Please enter your mining wallet address: " wallet_addr
+    export wallet_addr
+    cd $HOME/nimble/nimble-miner-public
+    source ./nimenv_localminers/bin/activate
+    screen -dmS nim bash -c "make run addr=$wallet_addr"
+
+    echo "独立启动，请输入命令 'screen -r nim' 查看运行状态。/Installation complete, enter 'screen -r nim' to view the running status."
+}
+
+
 # 主菜单
 function main_menu() {
     clear
     echo "请选择要执行的操作: /Please select an operation to execute:"
     echo "1. 安装常规节点 /Install a regular node"
+    echo "2. 独立启动挖矿节点 /Install a regular node"
     read -p "请输入选项（1）: Please enter your choice (1): " OPTION
 
     case $OPTION in
     1) install_node ;;
+    2) lonely_start ;;
     *) echo "无效选项。/Invalid option." ;;
     esac
 }
