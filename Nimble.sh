@@ -45,7 +45,7 @@ function install_node() {
     read -p "请输入你想要创建的钱包数量/Enter the number of wallets you want to create: " wallet_count
     for i in $(seq 1 $wallet_count); do
         wallet_name="wallet$i"
-        nimble-networkd keys add $wallet_name
+        nimble-networkd keys add $wallet_name --keyring-backend test
         echo "钱包 $wallet_name 已创建/Wallet $wallet_name has been created."
     done
 
