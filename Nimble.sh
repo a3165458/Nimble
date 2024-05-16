@@ -83,18 +83,28 @@ function lonely_start() {
     echo "独立启动，请输入命令 'screen -r nim' 查看运行状态。/Installation complete, enter 'screen -r nim' to view the running status."
 }
 
+function uninstall_node() {
+
+    screen -S nim -X quit
+    rm -rf $HOME/nimble
+    
+}
+    
+
 
 # 主菜单
 function main_menu() {
     clear
     echo "请选择要执行的操作: /Please select an operation to execute:"
     echo "1. 安装常规节点 /Install a regular node"
-    echo "2. 独立启动挖矿节点 /Install a regular node"
+    echo "2. 独立启动挖矿节点 /lonely_start"
+    echo "3. 卸载nimble挖矿 /uninstall_node"
     read -p "请输入选项（1）: Please enter your choice (1): " OPTION
 
     case $OPTION in
     1) install_node ;;
     2) lonely_start ;;
+    3) uninstall_node ;;
     *) echo "无效选项。/Invalid option." ;;
     esac
 }
