@@ -57,13 +57,22 @@ function install_node() {
             exit 1
     fi
 
+    cd mkdir -p ~/miniconda3
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+    bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+    rm -rf ~/miniconda3/miniconda.sh
+    ~/miniconda3/bin/conda init bash
+    source $HOME/.bashrc
+
+    conda create -n nimble python=3.11 -y
+    conda activate nimble
+    
     # 启动挖矿
     read -p "请输入挖矿钱包地址: Please enter your mining wallet address: " wallet_addr
     export wallet_addr
     cd $HOME/nimble
     git clone https://github.com/nimble-technology/nimble-miner-public.git
     cd nimble-miner-public
-    pip install numpy==1.24.4
     make install
     source ./nimenv_localminers/bin/activate
     screen -dmS nim bash -c "make run addr=$wallet_addr"
