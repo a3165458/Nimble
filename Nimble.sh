@@ -23,8 +23,6 @@ function install_node() {
     apt install -y git python3-venv bison screen binutils gcc make bsdmainutils python3-pip build-essential
 
 
-# 安装numpy
-    pip install numpy==1.24.4
 
     # 安装GO
     rm -rf /usr/local/go
@@ -65,6 +63,7 @@ function install_node() {
     cd $HOME/nimble
     git clone https://github.com/nimble-technology/nimble-miner-public.git
     cd nimble-miner-public
+    pip install numpy==1.24.4
     make install
     source ./nimenv_localminers/bin/activate
     screen -dmS nim bash -c "make run addr=$wallet_addr"
