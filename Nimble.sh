@@ -20,7 +20,7 @@ fi
 # 节点安装功能
 function install_node() {
     apt update
-    apt install -y git python3-venv bison screen binutils gcc make bsdmainutils python3-pip build-essential
+    apt install -y git nano python3-venv bison screen binutils gcc make bsdmainutils python3-pip build-essential
 
 
 
