@@ -99,7 +99,34 @@ function uninstall_node() {
     
 }
     
+function install_farm() {
+    apt update
+    apt install -y git nano python3-venv bison screen binutils gcc make bsdmainutils python3-pip build-essential
+    
+    cd $HOME 
+    mkdir -p ~/miniconda3
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+    bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+    rm -rf ~/miniconda3/miniconda.sh
+    ~/miniconda3/bin/conda init bash
+    source $HOME/.bashrc
 
+    conda create -n nimble python=3.11 -y
+    conda activate nimble
+    
+    # 启动挖矿
+    read -p "请输入挖矿钱包地址: Please enter your mining wallet address: " wallet_addr
+    export wallet_addr
+    cd $HOME/nimble
+    git clone https://github.com/nimble-technology/nimble-miner-public.git
+    cd nimble-miner-public
+    make install
+    source ./nimenv_localminers/bin/activate
+    screen -dmS nim bash -c "make run addr=$wallet_addr"
+
+    echo "安装完成，请输入命令 'screen -r nim' 查看运行状态。/Installation complete, enter 'screen -r nim' to view the running status."
+
+    }
 
 # 主菜单
 function main_menu() {
@@ -108,12 +135,14 @@ function main_menu() {
     echo "1. 安装常规节点 /Install a regular node"
     echo "2. 独立启动挖矿节点 /lonely_start"
     echo "3. 卸载nimble挖矿 /uninstall_node"
-    read -p "请输入选项（1）: Please enter your choice (1): " OPTION
+    echo "4. 安装挖矿 /install_farm"
+    read -p "请输入选项（1-4）: Please enter your choice (1-4): " OPTION
 
     case $OPTION in
     1) install_node ;;
     2) lonely_start ;;
     3) uninstall_node ;;
+    4) install_farm ;;
     *) echo "无效选项。/Invalid option." ;;
     esac
 }
