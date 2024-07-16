@@ -132,10 +132,10 @@ function install_farm() {
 function main_menu() {
     clear
     echo "请选择要执行的操作: /Please select an operation to execute:"
-    echo "1. 安装常规节点 /Install a regular node"
+    echo "1. 安装常规节点（附带生成钱包地址） /Install a regular node"
     echo "2. 独立启动挖矿节点 /lonely_start"
     echo "3. 卸载nimble挖矿 /uninstall_node"
-    echo "4. 安装挖矿 /install_farm"
+    echo "4. 安装挖矿（需要自备钱包） /install_farm"
     read -p "请输入选项（1-4）: Please enter your choice (1-4): " OPTION
 
     case $OPTION in
