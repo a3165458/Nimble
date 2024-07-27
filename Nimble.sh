@@ -130,6 +130,62 @@ function install_farm() {
 
     }
 
+
+function multiple_farm() {
+    # 获取用户输入
+    read -p "请输入挖矿钱包地址: Please enter your mining wallet address: " wallet_addr
+    read -p "请输入主钱包地址: Please enter your main wallet address: " master_wallet_address
+    export wallet_addr
+
+    # 检查并安装挖矿软件
+    if [ ! -d "$HOME/nimble/nimble-miner-public" ]; then
+        cd "$HOME/nimble" || mkdir -p "$HOME/nimble" && cd "$HOME/nimble"
+        git clone https://github.com/nimble-technology/nimble-miner-public.git
+        cd nimble-miner-public
+        make install
+    else
+        cd "$HOME/nimble/nimble-miner-public"
+    fi
+
+    # 获取可用GPU列表
+    available_gpus=$(nvidia-smi --query-gpu=index --format=csv,noheader | tr '\n' ',' | sed 's/,$//')
+    echo "可用的GPU: $available_gpus"
+
+    # 获取用户选择的GPU
+    while true; do
+        read -p "请输入要启动挖矿的GPU编号(以逗号分隔): Please enter the GPU numbers to start mining (separated by commas): " gpu_list
+        if [[ $gpu_list =~ ^[0-9]+(,[0-9]+)*$ ]]; then
+            IFS=',' read -ra gpu_array <<< "$gpu_list"
+            valid_input=true
+            for gpu in "${gpu_array[@]}"; do
+                if [[ ! $available_gpus =~ (^|,)$gpu($|,) ]]; then
+                    echo "错误：GPU $gpu 不可用。请重新输入。"
+                    valid_input=false
+                    break
+                fi
+            done
+            [ "$valid_input" = true ] && break
+        else
+            echo "无效输入。请输入以逗号分隔的数字。"
+        fi
+    done
+
+    # 启动挖矿
+    for gpu_index in "${gpu_array[@]}"; do
+        export CUDA_VISIBLE_DEVICES=$gpu_index
+        screen_name="nim_$gpu_index"
+        if screen -list | grep -q "$screen_name"; then
+            echo "警告：$screen_name 已经在运行。跳过此GPU。"
+        else
+            screen -dmS "$screen_name" bash -c "make run addr=$wallet_addr master_wallet=$master_wallet_address"
+            echo "显卡 $gpu_index 已启动挖矿。/ Mining has started on GPU $gpu_index."
+        fi
+    done
+
+    echo "挖矿已在选定的GPU上启动。请输入命令 'screen -r nim_<gpu_index>' 查看对应显卡的运行状态。"
+    echo "Mining has started on the selected GPUs. Enter 'screen -r nim_<gpu_index>' to view the running status of the corresponding GPU."
+}
+
 # 主菜单
 function main_menu() {
     clear
@@ -138,6 +194,7 @@ function main_menu() {
     echo "2. 独立启动挖矿节点 /lonely_start"
     echo "3. 卸载nimble挖矿 /uninstall_node"
     echo "4. 安装挖矿（需要自备钱包） /install_farm"
+    echo "5. 多卡挖矿（需要自备钱包） /install_farm"
     read -p "请输入选项（1-4）: Please enter your choice (1-4): " OPTION
 
     case $OPTION in
@@ -145,6 +202,7 @@ function main_menu() {
     2) lonely_start ;;
     3) uninstall_node ;;
     4) install_farm ;;
+    5) multiple_farm ;;
     *) echo "无效选项。/Invalid option." ;;
     esac
 }
