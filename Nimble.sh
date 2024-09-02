@@ -70,25 +70,31 @@ function install_node() {
     
     # 启动挖矿
     read -p "请输入挖矿钱包地址: Please enter your mining wallet address: " wallet_addr
-    read -p "请输入主钱包地址: Please enter your mining wallet address: " master_wallet_address
     export wallet_addr
     cd $HOME/nimble
     git clone https://github.com/nimble-technology/nimble-miner-public.git
     cd nimble-miner-public
     make install
     source ./nimenv_localminers/bin/activate
-    screen -dmS nim bash -c "make run addr=$wallet_addr master_wallet=$master_wallet_address"
+    mkdir -p /etc/nimbleservice
+    echo "NIMBLE_PUBKEY=$wallet_addr" > /etc/nimbleservice/nimbleservice.conf
+    chmod +x nimbleminer
+    screen -dmS nim bash -c "./nimbleminer"
 
     echo "安装完成，请输入命令 'screen -r nim' 查看运行状态。/Installation complete, enter 'screen -r nim' to view the running status."
 }
 
 function lonely_start() {
     read -p "请输入挖矿钱包地址: Please enter your mining wallet address: " wallet_addr
-    read -p "请输入主钱包地址: Please enter your mining wallet address: " master_wallet_address
+
     export wallet_addr
     cd $HOME/nimble/nimble-miner-public
     source ./nimenv_localminers/bin/activate
-    screen -dmS nim bash -c "make run addr=$wallet_addr master_wallet=$master_wallet_address"
+    mkdir -p /etc/nimbleservice
+    echo "NIMBLE_PUBKEY=$wallet_addr" > /etc/nimbleservice/nimbleservice.conf
+    chmod +x nimbleminer
+    screen -dmS nim bash -c "./nimbleminer"
+
 
     echo "独立启动，请输入命令 'screen -r nim' 查看运行状态。/Installation complete, enter 'screen -r nim' to view the running status."
 }
@@ -124,7 +130,10 @@ function install_farm() {
     cd nimble-miner-public
     make install
     source ./nimenv_localminers/bin/activate
-    screen -dmS nim bash -c "make run addr=$wallet_addr master_wallet=$master_wallet_address"
+    mkdir -p /etc/nimbleservice
+    echo "NIMBLE_PUBKEY=$wallet_addr" > /etc/nimbleservice/nimbleservice.conf
+    chmod +x nimbleminer
+    screen -dmS nim bash -c "./nimbleminer"
 
     echo "安装完成，请输入命令 'screen -r nim' 查看运行状态。/Installation complete, enter 'screen -r nim' to view the running status."
 
@@ -134,7 +143,6 @@ function install_farm() {
 function multiple_farm() {
     # 获取用户输入
     read -p "请输入挖矿钱包地址: Please enter your mining wallet address: " wallet_addr
-    read -p "请输入主钱包地址: Please enter your main wallet address: " master_wallet_address
     export wallet_addr
 
     # 检查并安装挖矿软件
@@ -177,7 +185,10 @@ function multiple_farm() {
         if screen -list | grep -q "$screen_name"; then
             echo "警告：$screen_name 已经在运行。跳过此GPU。"
         else
-            screen -dmS "$screen_name" bash -c "make run addr=$wallet_addr master_wallet=$master_wallet_address"
+                mkdir -p /etc/nimbleservice
+                echo "NIMBLE_PUBKEY=$wallet_addr" > /etc/nimbleservice/nimbleservice.conf
+                chmod +x nimbleminer
+    s           creen -dmS nim bash -c "./nimbleminer"
             echo "显卡 $gpu_index 已启动挖矿。/ Mining has started on GPU $gpu_index."
         fi
     done
